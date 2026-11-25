@@ -1,10 +1,11 @@
-# Cocosette Script
+# COCOCSETTE SCRIPT
 
-Cocosette es un lenguaje de dominio específico (DSL) diseñado para cargar, transformar, analizar y visualizar datos desde una sintaxis declarativa inspirada en pipelines.
+Cocosette es un lenguaje DSL de datos con una sintaxis de pipelines.
 
-El proyecto está desarrollado en Python y utiliza ANTLR4 para generar el lexer, el parser y el visitor de la gramática.
+Se desarrolló en Python y utiliza ANTLR4 para generar el lexer, el parser y el visitor.
 
-No utiliza bibliotecas externas como pandas, NumPy, Matplotlib o scikit-learn. Las tablas, operaciones estadísticas, gráficos PNG, perceptrones y regresiones se implementan directamente con Python y la biblioteca estándar.
+No utiliza bibliotecas externas como pandas, NumPy, Matplotlib o scikit-learn. 
+Las tablas, operaciones estadísticas, gráficos PNG, perceptrones y regresiones se implementan directamente con Python y la biblioteca estándar.
 
 ## Ejemplo rápido
 
@@ -701,7 +702,6 @@ Directorio destinado a los resultados producidos por Cocosette:
 - CSV exportados.
 - Gráficos PNG.
 
-Actualmente contiene únicamente `.gitkeep`, por lo que los archivos generados se ignoran o pueden añadirse manualmente según la configuración de Git.
 
 ## Comandos Make disponibles
 
@@ -808,6 +808,7 @@ Modelado y visualización:
 - Los modelos se entrenan con implementaciones sencillas.
 - El terminal trabaja en modo línea por línea y conserva una memoria independiente.
 
-## Licencia
-
-No se ha definido una licencia en el repositorio. Antes de distribuir o reutilizar el código externamente, conviene añadir un archivo `LICENSE` y declarar explícitamente los términos de uso.
+## INTEGRANTES
+- David Avendaño
+- Laura Niño
+- Brayan Paredes
