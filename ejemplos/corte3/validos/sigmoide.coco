@@ -1,0 +1,26 @@
+# Constante de Euler
+e = 2.71828;
+
+# Funcion de activacion Sigmoide: 1 / (1 + e^(-x))
+# Convierte cualquier numero en una probabilidad entre 0 y 1.
+funcion sigmoide(x) {
+    retornar 1 / (1 + (e ^ (-x)));
+}
+
+# 1. En x = 0 da exactamente el punto medio (0.5)
+imprimir "Sigmoide en x = 0:";
+imprimir sigmoide(0);
+
+# 2. Con valores positivos se acerca a 1 (activacion segura)
+imprimir "Sigmoide en x = 2:";
+imprimir sigmoide(2);
+
+imprimir "Sigmoide en x = 5:";
+imprimir sigmoide(5);
+
+# 3. Con valores negativos se acerca a 0 (desactivacion segura)
+imprimir "Sigmoide en x = -2:";
+imprimir sigmoide(-2);
+
+imprimir "Sigmoide en x = -5:";
+imprimir sigmoide(-5);
