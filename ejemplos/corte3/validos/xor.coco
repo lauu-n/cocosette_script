@@ -1,4 +1,3 @@
-# PARTE 1: Perceptron entrenado desde tabla (Compuerta AND)
 datos_and = cargar "datos/compuerta_and.csv";
 neurona_and = perceptron(datos_and, "x1", "x2", "y", 0.1, 1000);
 imprimir neurona_and;
@@ -8,8 +7,6 @@ imprimir calcular(neurona_and, 0, 1);
 imprimir calcular(neurona_and, 1, 0);
 imprimir calcular(neurona_and, 1, 1);
 
-# PARTE 2: Perceptron Multicapa (MLP) para el problema no lineal XOR
-# XOR = AND(NAND(x1, x2), OR(x1, x2))
 n_nand = perceptron(-1.0, -1.0, 1.5);
 n_or   = perceptron(1.0, 1.0, -0.5);
 n_salida = perceptron(1.0, 1.0, -1.5);
@@ -26,8 +23,6 @@ imprimir xor_10;
 xor_11 = calcular(n_salida, calcular(n_nand, 1, 1), calcular(n_or, 1, 1));
 imprimir xor_11;
 
-
-# Grafica del perceptron AND
 datos_and = cargar "datos/compuerta_and.csv";
 
 graficar dispersion datos_and
@@ -38,12 +33,11 @@ ajuste neurona_and
 titulo "Perceptron: compuerta AND"
 etiqueta_x "Entrada x1"
 etiqueta_y "Entrada x2"
-guardar como "salidas/ejemplo10_and.png";
+guardar como "salidas/and.png";
 
 # Dataset XOR
 datos_xor = cargar "datos/compuerta_xor.csv";
 
-# Grafica de la red neuronal XOR
 graficar dispersion datos_xor
 x x1
 y x2
@@ -51,5 +45,5 @@ por_clase y
 titulo "Red neuronal multicapa: XOR"
 etiqueta_x "Entrada x1"
 etiqueta_y "Entrada x2"
-guardar como "salidas/ejemplo10_xor.png"
+guardar como "salidas/xor.png"
 ajuste n_nand, n_or;
