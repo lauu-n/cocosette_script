@@ -461,9 +461,23 @@ class InterpreteVisitor(CocosetteVisitor):
         else:
             col_y = None
 
-        # Modelo entrenado opcional
+        # Columna de agrupamiento / clase opcional
+        col_clase = None
+        if hasattr(ctx, "colclase") and ctx.colclase is not None:
+            col_clase = ctx.colclase.text
+
+        # Modelo entrenado opcional (un modelo o lista de modelos para ajuste)
         modelo = None
-        if hasattr(ctx, "modelo") and ctx.modelo is not None:
+        if hasattr(ctx, "listaModelos") and ctx.listaModelos() is not None:
+            nombres_modelos = [m_tok.getText() for m_tok in ctx.listaModelos().ID()]
+            modelo = [self.memoria.obtener(nm, linea=linea, columna=columna) for nm in nombres_modelos]
+            for m_obj, nm in zip(modelo, nombres_modelos):
+                if not isinstance(m_obj, dict) or "tipo" not in m_obj:
+                    raise TypeError(
+                        f"Error semantico (linea {linea}, columna {columna}): "
+                        f"'{nm}' no es un modelo entrenado."
+                    )
+        elif hasattr(ctx, "modelo") and ctx.modelo is not None:
             nombre_modelo = ctx.modelo.text
             modelo = self.memoria.obtener(nombre_modelo, linea=linea, columna=columna)
 
@@ -500,6 +514,7 @@ class InterpreteVisitor(CocosetteVisitor):
                 leyenda=leyenda_val,
                 ruta=ruta_val,
                 modelo=modelo,
+                col_clase=col_clase,
             )
         except (KeyError, TypeError, ValueError) as error:
             detalle = error.args[0] if error.args else str(error)

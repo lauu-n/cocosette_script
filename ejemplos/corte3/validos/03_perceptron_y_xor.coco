@@ -51,4 +51,5 @@ por_clase y
 titulo "Red neuronal multicapa: XOR"
 etiqueta_x "Entrada x1"
 etiqueta_y "Entrada x2"
-guardar como "salidas/ejemplo10_xor.png";
+guardar como "salidas/ejemplo10_xor.png"
+ajuste n_nand, n_or;
