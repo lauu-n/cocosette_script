@@ -1,0 +1,238 @@
+import os
+import sys
+import traceback
+
+# --- Configuración de rutas (igual que en main.py) ---
+sys.path.append("src/parser")
+sys.path.append("src")
+sys.path.append("parser")
+sys.path.append("src/librerias")
+sys.path.append("librerias")
+
+from antlr4 import CommonTokenStream, InputStream
+from CocosetteLexer import CocosetteLexer
+from CocosetteParser import CocosetteParser
+from visitor import InterpreteVisitor
+from memoria_ejecucion import MemoriaEjecucion
+
+
+# =====================================================================
+# Funciones auxiliares
+# =====================================================================
+
+def mostrar_banner():
+    print("=" * 60)
+    print("  Cocosette — Terminal interactiva")
+    print("  DSL para Ciencia de Datos y Visualización")
+    print("  Escribe 'cocoayuda' para ver los comandos disponibles")
+    print("  Escribe 'cocosalir' o Ctrl+D para terminar")
+    print("=" * 60)
+    print()
+
+
+def mostrar_ayuda():
+    print("""
+Comandos especiales de la terminal:
+  cocoayuda / help          → muestra esta ayuda
+  cocosalir / exit / quit   → cierra la terminal
+  limpiar / clear           → limpia la pantalla
+  vars / variables          → muestra las variables definidas
+  memoria                   → muestra el contenido de la memoria
+  reset                     → borra todas las variables y reinicia
+  correr / cargar <arch>    → ejecuta un archivo .coco directamente
+
+También puedes escribir cualquier sentencia válida de Cocosette.
+Ejemplos:
+  x = 10 + 5;
+  ventas = cargar "datos/ventas.csv";
+  imprimir ventas;
+  resumen = ventas |> agrupar por [ciudad] |> resumir total = suma(precio);
+  correr ejemplos/validos/08_regresion_lineal.coco
+""")
+
+
+def limpiar_pantalla():
+    # Funciona en Windows y en Linux/Mac usando solo la biblioteca estándar
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def ejecutar_codigo(codigo: str, visitor: InterpreteVisitor) -> bool:
+    """
+    Ejecuta un fragmento de código Cocosette.
+    Devuelve True si no hubo errores graves.
+    """
+    codigo = codigo.strip()
+    if not codigo:
+        return True
+
+    try:
+        flujo = InputStream(codigo)
+        lexer = CocosetteLexer(flujo)
+        tokens = CommonTokenStream(lexer)
+        parser = CocosetteParser(tokens)
+
+        arbol = parser.programa()
+        visitor.visitPrograma(arbol)
+        return True
+
+    except Exception as e:
+        print(f"\n[Error] {type(e).__name__}: {e}")
+        # Descomenta la siguiente línea si quieres ver el stack completo al depurar
+        # traceback.print_exc()
+        return False
+
+
+def ejecutar_archivo_coco(ruta: str, visitor: InterpreteVisitor) -> bool:
+    """
+    Lee y ejecuta un archivo de código Cocosette (.coco) dentro
+    de la sesión activa de la terminal, conservando las variables.
+    """
+    # Limpiar comillas si el usuario escribió correr "ejemplo.coco"
+    ruta_limpia = ruta.strip()
+    if (ruta_limpia.startswith('"') and ruta_limpia.endswith('"')) or (ruta_limpia.startswith("'") and ruta_limpia.endswith("'")):
+        ruta_limpia = ruta_limpia[1:-1]
+
+    if not os.path.exists(ruta_limpia):
+        print(f"Error: no se encontró el archivo '{ruta_limpia}'")
+        return False
+
+    try:
+        with open(ruta_limpia, "r", encoding="utf-8") as f:
+            codigo = f.read()
+
+        print(f"Ejecutando: {ruta_limpia}")
+        print("-" * 40)
+        exito = ejecutar_codigo(codigo, visitor)
+        print("-" * 40)
+        print(f"Ejecución de '{ruta_limpia}' finalizada.")
+        return exito
+    except Exception as e:
+        print(f"\n[Error al leer o ejecutar el archivo]: {e}")
+        return False
+
+
+def mostrar_variables(visitor: InterpreteVisitor):
+    """Muestra de forma legible las variables que hay en memoria."""
+    memoria = visitor.memoria
+    if not hasattr(memoria, "_variables") or not memoria._variables:
+        print("No hay variables definidas.")
+        return
+
+    print("\nVariables actuales:")
+    print("-" * 40)
+    for nombre, valor in memoria._variables.items():
+        tipo = type(valor).__name__
+        # Para tablas mostramos un resumen corto
+        if hasattr(valor, "filas") and hasattr(valor, "columnas"):
+            print(f"  {nombre:20} → Tabla ({len(valor.filas)} filas × {len(valor.columnas)} columnas)")
+        else:
+            representacion = repr(valor)
+            if len(representacion) > 60:
+                representacion = representacion[:57] + "..."
+            print(f"  {nombre:20} → {representacion}  ({tipo})")
+    print()
+
+
+# =====================================================================
+# Bucle principal de la terminal (REPL)
+# =====================================================================
+
+def modo_interactivo(visitor: InterpreteVisitor = None):
+    if visitor is None:
+        visitor = InterpreteVisitor()
+
+    mostrar_banner()
+
+    buffer = []          # para sentencias multilínea
+    prompt = "coco> "
+    prompt_cont = ".... "
+
+    while True:
+        try:
+            linea = input(prompt if not buffer else prompt_cont)
+
+            # Comandos especiales (solo cuando no hay buffer pendiente)
+            if not buffer:
+                linea_limpia = linea.strip()
+                cmd = linea_limpia.lower()
+
+                # 1. Comando para correr/cargar archivos .coco directamente
+                partes = linea_limpia.split(maxsplit=1)
+                cmd_primario = partes[0].lower() if partes else ""
+
+                if cmd_primario in ("correr", "cargar", "ejecutar") and len(partes) > 1:
+                    ejecutar_archivo_coco(partes[1], visitor)
+                    continue
+
+                # 2. Comandos de control de la terminal
+                if cmd in ("cocosalir", "exit", "quit"):
+                    print("cocoadiós.")
+                    break
+                if cmd in ("cocoayuda", "help"):
+                    mostrar_ayuda()
+                    continue
+                if cmd in ("limpiar", "clear"):
+                    limpiar_pantalla()
+                    mostrar_banner()
+                    continue
+                if cmd in ("vars", "variables"):
+                    mostrar_variables(visitor)
+                    continue
+                if cmd == "memoria":
+                    print(visitor.memoria)
+                    continue
+                if cmd == "reset":
+                    visitor = InterpreteVisitor()
+                    print("Memoria reiniciada.")
+                    continue
+
+            # Acumular líneas
+            buffer.append(linea)
+
+            # Detectar si la sentencia está completa (termina en ; o es un bloque {})
+            texto = "\n".join(buffer).strip()
+            if texto.endswith(";") or texto.endswith("}"):
+                ejecutar_codigo(texto, visitor)
+                buffer = []
+
+        except EOFError:          # Ctrl+D
+            print("\ncocoadiós.")
+            break
+        except KeyboardInterrupt: # Ctrl+C
+            print("\n(Interrumpido. Escribe 'cocosalir' para terminar)")
+            buffer = []
+
+
+# =====================================================================
+# Punto de entrada
+# =====================================================================
+
+def main():
+    args = sys.argv[1:]
+
+    # Caso 1: sin argumentos → solo interactivo
+    if not args:
+        modo_interactivo()
+        return
+
+    # Caso 2: se pasó un archivo
+    ruta = args[0]
+    entrar_interactivo = False
+
+    if ruta in ("-i", "--interactivo"):
+        if len(args) < 2:
+            print("Uso: python3 src/terminal.py -i archivo.coco")
+            sys.exit(1)
+        ruta = args[1]
+        entrar_interactivo = True
+
+    visitor = InterpreteVisitor()
+    exito = ejecutar_archivo_coco(ruta, visitor)
+
+    if (entrar_interactivo or "-i" in args) and exito:
+        print("\nEntrando en modo interactivo (la memoria se conserva)...\n")
+        modo_interactivo(visitor)
+
+
+if __name__ == "__main__":
+    main()
