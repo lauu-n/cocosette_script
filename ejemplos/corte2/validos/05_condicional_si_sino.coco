@@ -1,7 +1,3 @@
-# ====================================================================
-# EJEMPLO: ESTRUCTURA CONDICIONAL SI / SINO (IF / ELSE) EN COCOSETTE
-# ====================================================================
-
 # 1. Condicional basico con igualdad: 2 + 2 == 5
 si (2 + 2 == 5) {
     imprimir "2 + 2 es igual a 5: es verdad";

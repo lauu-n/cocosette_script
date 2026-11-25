@@ -1,6 +1,3 @@
-# ====================================================================
-# CORTE III — CASO INVALIDO 01: GRAFICAR VARIABLE QUE NO ES TABLA
-# ====================================================================
 # La clausula 'graficar' exige que el objeto a visualizar sea una tabla.
 
 numero = 42;
