@@ -1,1 +1,6 @@
-# cocosette_script
+# COCOSETTE SCRIPT
+## PROYECTO DE CURSO
+
+---
+
+oh hell naw
