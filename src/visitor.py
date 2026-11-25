@@ -637,9 +637,7 @@ class InterpreteVisitor(CocosetteVisitor):
     def visitBloqueSi(self, ctx):
         """Ejecuta las sentencias dentro del bloque 'si'."""
         for nodo_sentencia in ctx.sentencia():
-            retorno = self.visitSentencia(nodo_sentencia)
-            if retorno is not None:
-                return retorno
+            self.visitSentencia(nodo_sentencia)
         return None
 
     def visitBloqueSino(self, ctx):
@@ -647,9 +645,7 @@ class InterpreteVisitor(CocosetteVisitor):
         if hasattr(ctx, "cocoCondicional") and ctx.cocoCondicional() is not None:
             return self.visitCocoCondicional(ctx.cocoCondicional())
         for nodo_sentencia in ctx.sentencia():
-            retorno = self.visitSentencia(nodo_sentencia)
-            if retorno is not None:
-                return retorno
+            self.visitSentencia(nodo_sentencia)
         return None
 
     def visitCocoDefFuncion(self, ctx):
