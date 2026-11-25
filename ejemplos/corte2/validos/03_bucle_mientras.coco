@@ -1,0 +1,15 @@
+# ====================================================================
+# CORTE II — EJEMPLO 03: CONTROL DE FLUJO CON BUCLE MIENTRAS
+# ====================================================================
+
+contador = 1;
+acumulador = 0;
+
+mientras (contador <= 5) {
+    imprimir contador;
+    acumulador = acumulador + contador;
+    contador = contador + 1;
+}
+
+imprimir "Total acumulado:";
+imprimir acumulador;

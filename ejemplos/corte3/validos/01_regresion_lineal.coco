@@ -1,0 +1,18 @@
+# ====================================================================
+# CORTE III — EJEMPLO 01: REGRESION LINEAL (THE SQUARE TRICK)
+# ====================================================================
+
+casas = cargar "datos/casas.csv";
+
+# Entrenar modelo lineal: y = m * x + b
+modelo_casas = regresion_lineal(casas, "habitaciones", "precio", 0.01, 1000);
+
+imprimir modelo_casas;
+
+# Prediccion para 4 habitaciones
+prediccion_4_hab = calcular(modelo_casas, 4);
+imprimir prediccion_4_hab;
+
+# Prediccion para 7 habitaciones
+prediccion_7_hab = calcular(modelo_casas, 7);
+imprimir prediccion_7_hab;

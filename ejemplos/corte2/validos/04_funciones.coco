@@ -1,0 +1,22 @@
+# ====================================================================
+# CORTE II — EJEMPLO 04: DEFINICION Y LLAMADA DE FUNCIONES DE USUARIO
+# ====================================================================
+
+# Funcion simple de un parametro
+funcion duplicar(numero) {
+    retornar numero * 2;
+}
+
+# Funcion con multiples parametros y logica interna
+funcion calcular_area(base, altura) {
+    area = (base * altura) / 2;
+    retornar area;
+}
+
+res_doble = duplicar(25);
+imprimir res_doble;
+
+res_area = calcular_area(10, 4);
+imprimir res_area;
+
+imprimir duplicar(100);

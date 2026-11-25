@@ -1,0 +1,20 @@
+# ====================================================================
+# CORTE I — EJEMPLO 03: ASIGNACIONES Y TIPOS DE DATOS ELEMENTALES
+# ====================================================================
+
+# Tipos basicos del lenguaje
+nombre_sistema = "Cocosette DSL";
+version_mayor = 1;
+factor_ajuste = 3.14159;
+activo = verdadero;
+en_mantenimiento = falso;
+
+imprimir nombre_sistema;
+imprimir version_mayor;
+imprimir factor_ajuste;
+imprimir activo;
+
+# Reasignacion de variables
+contador = 10;
+contador = contador + 5;
+imprimir contador;

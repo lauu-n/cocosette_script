@@ -1,0 +1,7 @@
+# ====================================================================
+# CORTE III — CASO INVALIDO 02: CALCULAR CON ARGUMENTO QUE NO ES MODELO
+# ====================================================================
+# 'calcular' requiere que su primer parametro sea un modelo entrenado.
+
+valor_falso = 12345;
+prediccion = calcular(valor_falso, 10);

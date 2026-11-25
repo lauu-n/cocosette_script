@@ -10,9 +10,12 @@ generar:
 	cd $(CARPETA_GRAMATICA) && antlr4 -Dlanguage=Python3 -visitor -o $(SALIDA_DESDE_GRAMATICA) $(GRAMATICA)
 
 validar:
-	python3 src/validar.py ejemplos/validos/*.coco
-	python3 src/validar.py ejemplos/corte3/*.coco
-	python3 src/validar.py ejemplos/invalidos/*.coco
+	python3 src/validar.py ejemplos/corte1/validos/*.coco
+	python3 src/validar.py ejemplos/corte2/validos/*.coco
+	python3 src/validar.py ejemplos/corte3/validos/*.coco
+	python3 src/validar.py ejemplos/corte1/invalidos/*.coco
+	python3 src/validar.py ejemplos/corte2/invalidos/*.coco
+	python3 src/validar.py ejemplos/corte3/invalidos/*.coco
 
 interactivo:
 	python3 src/terminal.py

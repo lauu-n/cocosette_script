@@ -1,0 +1,12 @@
+# ====================================================================
+# CORTE III — CASO INVALIDO 03: AJUSTE EN GRAFICO CON VARIABLE NO MODELO
+# ====================================================================
+# La clausula 'ajuste' solo admite modelos entrenados en memoria.
+
+ventas = cargar "datos/ventas.csv";
+no_es_modelo = "cadena_de_texto";
+
+graficar dispersion ventas
+    x unidades
+    y precio
+    ajuste no_es_modelo;

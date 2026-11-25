@@ -1,0 +1,11 @@
+# ====================================================================
+# CORTE II — EJEMPLO 01: CARGA DE CSV Y PIPELINE BASICO
+# ====================================================================
+
+ventas = cargar "datos/ventas.csv";
+
+ventas_filtradas = ventas
+    |> seleccionar [fecha, ciudad, categoria, unidades, precio]
+    |> filtrar donde unidades > 0 && precio > 0;
+
+imprimir ventas_filtradas;

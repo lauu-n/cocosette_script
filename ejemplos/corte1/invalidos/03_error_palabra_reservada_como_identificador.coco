@@ -1,0 +1,8 @@
+# ====================================================================
+# CORTE I — CASO INVALIDO 03: PALABRA RESERVADA COMO IDENTIFICADOR
+# ====================================================================
+# Las palabras clave del lenguaje (graficar, cargar, mientras, etc.)
+# no pueden emplearse como nombres de variables.
+
+graficar = 10;
+cargar = 20;

@@ -1,0 +1,28 @@
+# ====================================================================
+# CORTE III — EJEMPLO 06: IDENTIFICADORES x, y Y LINEA DE AJUSTE ML
+# ====================================================================
+
+# x e y como variables normales
+x = 10;
+y = 20;
+imprimir x + y;
+
+contador = 1;
+mientras (contador <= 3) {
+    x = x + contador;
+    contador = contador + 1;
+}
+imprimir x;
+
+# x e y como columnas y como ejes con modelo de ajuste
+datos = cargar "datos/curva.csv";
+modelo = regresion_polinomial(datos, "x", "y");
+imprimir modelo;
+
+graficar dispersion datos
+    x x
+    y y
+    ajuste modelo
+    titulo "Parabola con columnas x e y"
+    leyenda "Datos"
+    guardar como "salidas/curva_xy.png";

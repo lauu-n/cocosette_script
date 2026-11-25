@@ -1,0 +1,15 @@
+# ====================================================================
+# CORTE I — EJEMPLO 01: EXPRESIONES ARITMETICAS Y LOGICAS BASICAS
+# ====================================================================
+
+precio_base = 25000;
+descuento = 0.15;
+impuesto = 0.19;
+
+precio_final = precio_base - (precio_base * descuento) + (precio_base * impuesto);
+es_oferta = precio_base > 10000 && descuento >= 0.10;
+requiere_revision = !es_oferta || precio_final > 50000;
+
+imprimir precio_final;
+imprimir es_oferta;
+imprimir requiere_revision;

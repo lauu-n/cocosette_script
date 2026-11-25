@@ -1,0 +1,8 @@
+# ====================================================================
+# CORTE II — CASO INVALIDO 01: VARIABLE NO DECLARADA EN PIPELINE
+# ====================================================================
+
+ventas = cargar "datos/ventas.csv";
+
+resultado = ventas
+    |> filtrar donde variable_inexistente > 10;

@@ -1,0 +1,8 @@
+# ====================================================================
+# CORTE II — CASO INVALIDO 03: COLUMNA INEXISTENTE EN PROYECCION
+# ====================================================================
+
+ventas = cargar "datos/ventas.csv";
+
+resultado = ventas
+    |> seleccionar [columna_que_no_existe];

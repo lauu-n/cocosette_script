@@ -1,0 +1,7 @@
+# ====================================================================
+# CORTE I — CASO INVALIDO 02: ERROR SINTACTICO FALTA PUNTO Y COMA
+# ====================================================================
+# Cada sentencia en Cocosette debe terminar obligatoriamente con punto y coma (;).
+
+variable_a = 100
+variable_b = 200;
