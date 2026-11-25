@@ -80,7 +80,7 @@ sentencia
 // Después aparece =.
 // Después aparece la fuente de datos.
 asignacion
-    : ID '=' cocoFuente
+    : ID ( '[' expresion ']' )? '=' cocoFuente
     ;
 
 
@@ -531,19 +531,21 @@ listaModelos
 // El orden de las reglas hace que unas operaciones tengan prioridad
 // sobre otras. Por ejemplo, la multiplicación va antes que la suma.
 expresion
-    : op = ( '-' | '!' ) expresion                     # expUnaria
-    | <assoc=right> expresion '^' expresion            # expPotencia
+    : '(' expresion ')'                                 # expParentesis
+    | '[' ( expresion ( ',' expresion )* )? ']'         # expLista
+    | expresion '[' expresion ']'                       # expIndex
+    | llamadaFuncion                                    # expLlamada
+    | cocoLlamadaML                                     # expLlamadaML
+    | op = ( '-' | '!' ) expresion                      # expUnaria
+    | <assoc=right> expresion '^' expresion             # expPotencia
     | expresion op = ( '*' | '/' | '%' ) expresion      # expMultiplicativa
     | expresion op = ( '+' | '-' ) expresion            # expAditiva
     | expresion op = ( '<' | '<=' | '>' | '>=' ) expresion  # expRelacional
     | expresion op = ( '==' | '!=' ) expresion          # expIgualdad
     | expresion '&&' expresion                          # expAnd
     | expresion '||' expresion                          # expOr
-    | '(' expresion ')'                                 # expParentesis
-    | llamadaFuncion                                    # expLlamada
-    | cocoLlamadaML                                     # expLlamadaML
     | literal                                           # expLiteral
-    | ID                                                 # expIdentificador
+    | ID                                                # expIdentificador
     ;
 
 
