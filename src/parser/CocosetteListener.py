@@ -431,6 +431,15 @@ class CocosetteListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by CocosetteParser#expLista.
+    def enterExpLista(self, ctx:CocosetteParser.ExpListaContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#expLista.
+    def exitExpLista(self, ctx:CocosetteParser.ExpListaContext):
+        pass
+
+
     # Enter a parse tree produced by CocosetteParser#expRelacional.
     def enterExpRelacional(self, ctx:CocosetteParser.ExpRelacionalContext):
         pass
@@ -464,6 +473,15 @@ class CocosetteListener(ParseTreeListener):
 
     # Exit a parse tree produced by CocosetteParser#expLlamadaML.
     def exitExpLlamadaML(self, ctx:CocosetteParser.ExpLlamadaMLContext):
+        pass
+
+
+    # Enter a parse tree produced by CocosetteParser#expIndex.
+    def enterExpIndex(self, ctx:CocosetteParser.ExpIndexContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#expIndex.
+    def exitExpIndex(self, ctx:CocosetteParser.ExpIndexContext):
         pass
 
 

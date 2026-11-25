@@ -244,6 +244,11 @@ class CocosetteVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CocosetteParser#expLista.
+    def visitExpLista(self, ctx:CocosetteParser.ExpListaContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CocosetteParser#expRelacional.
     def visitExpRelacional(self, ctx:CocosetteParser.ExpRelacionalContext):
         return self.visitChildren(ctx)
@@ -261,6 +266,11 @@ class CocosetteVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CocosetteParser#expLlamadaML.
     def visitExpLlamadaML(self, ctx:CocosetteParser.ExpLlamadaMLContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CocosetteParser#expIndex.
+    def visitExpIndex(self, ctx:CocosetteParser.ExpIndexContext):
         return self.visitChildren(ctx)
 
 

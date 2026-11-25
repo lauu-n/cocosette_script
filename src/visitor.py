@@ -147,7 +147,34 @@ class InterpreteVisitor(CocosetteVisitor):
         # 2. Si no es una columna de la fila actual, lo buscamos en la memoria general
         linea = ctx.start.line
         columna = ctx.start.column
+        if not self.memoria.existe(nombre) and nombre in self.funciones:
+            return {"tipo": "funcion", "nombre": nombre}
         return self.memoria.obtener(nombre, linea=linea, columna=columna)
+
+    def visitExpLista(self, ctx):
+        """Evalua una lista literal: [exp1, exp2, ...] o []."""
+        elementos = []
+        if hasattr(ctx, "expresion") and ctx.expresion():
+            for exp in ctx.expresion():
+                elementos.append(self.visit(exp))
+        return elementos
+
+    def visitExpIndex(self, ctx):
+        """Evalua el acceso por indice a una lista o texto: l[i]."""
+        linea = ctx.start.line
+        columna = ctx.start.column
+        obj = self.visit(ctx.expresion(0))
+        idx = self.visit(ctx.expresion(1))
+        if not isinstance(obj, (list, tuple, str)):
+            raise TypeError(
+                f"Error semantico (linea {linea}, columna {columna}): no se puede indexar un tipo '{type(obj).__name__}'."
+            )
+        try:
+            return obj[int(idx)]
+        except IndexError:
+            raise IndexError(
+                f"Error semantico (linea {linea}, columna {columna}): indice {idx} fuera de rango."
+            )
 
     def visitExpLlamada(self, ctx):
         """Evalua la llamada a una funcion dentro de una expresion matematica o logica."""
@@ -232,6 +259,13 @@ class InterpreteVisitor(CocosetteVisitor):
         operador = ctx.op.text
 
         if operador == "+":
+            if isinstance(lado_izquierdo, list) and isinstance(lado_derecho, list):
+                return lado_izquierdo + lado_derecho
+            if isinstance(lado_izquierdo, list):
+                return lado_izquierdo + [lado_derecho]
+            if isinstance(lado_derecho, list):
+                return [lado_izquierdo] + lado_derecho
+
             if isinstance(lado_izquierdo, str) or isinstance(lado_derecho, str):
                 texto_izq = "" if lado_izquierdo is None else str(lado_izquierdo)
                 texto_der = "" if lado_derecho is None else str(lado_derecho)
@@ -604,9 +638,21 @@ class InterpreteVisitor(CocosetteVisitor):
     # ----------------------------------------------------------------
 
     def visitAsignacion(self, ctx):
-        """Ejecuta una asignacion: variable = fuente."""
+        """Ejecuta una asignacion: variable = fuente o variable[indice] = fuente."""
         nombre_variable = ctx.ID().getText()
         valor_calculado = self.visit(ctx.cocoFuente())
+
+        if hasattr(ctx, "expresion") and ctx.expresion() is not None:
+            linea = ctx.start.line
+            columna = ctx.start.column
+            idx = self.visit(ctx.expresion())
+            lista = self.memoria.obtener(nombre_variable, linea=linea, columna=columna)
+            if not isinstance(lista, list):
+                raise TypeError(
+                    f"Error semantico (linea {linea}, columna {columna}): '{nombre_variable}' no es una lista."
+                )
+            lista[int(idx)] = valor_calculado
+            return valor_calculado
 
         self.memoria.guardar(nombre_variable, valor_calculado)
         return valor_calculado
@@ -690,19 +736,68 @@ class InterpreteVisitor(CocosetteVisitor):
         linea = ctx.start.line
         columna = ctx.start.column
 
-        if nombre_func not in self.funciones:
-            raise NameError(
-                f"Error semantico (linea {linea}, columna {columna}): la funcion '{nombre_func}' no ha sido definida."
-            )
-
-        receta = self.funciones[nombre_func]
-        nombres_params = receta["params"]
-        cuerpo = receta["cuerpo"]
-
         valores_args = []
         if ctx.listaArgumentos() is not None:
             for exp in ctx.listaArgumentos().expresion():
                 valores_args.append(self.visit(exp))
+
+        # Funciones incorporadas (built-ins) para listas y utilidades
+        if nombre_func in ("longitud", "len"):
+            if len(valores_args) != 1:
+                raise TypeError(
+                    f"Error semantico (linea {linea}, columna {columna}): '{nombre_func}' espera 1 argumento."
+                )
+            arg = valores_args[0]
+            if hasattr(arg, "__len__"):
+                return len(arg)
+            raise TypeError(
+                f"Error semantico (linea {linea}, columna {columna}): '{nombre_func}' requiere una lista o texto."
+            )
+
+        if nombre_func in ("agregar", "append"):
+            if len(valores_args) != 2:
+                raise TypeError(
+                    f"Error semantico (linea {linea}, columna {columna}): '{nombre_func}' espera 2 argumentos: lista y elemento."
+                )
+            lista, elem = valores_args
+            if not isinstance(lista, list):
+                raise TypeError(
+                    f"Error semantico (linea {linea}, columna {columna}): el primer argumento de '{nombre_func}' debe ser una lista."
+                )
+            lista.append(elem)
+            return lista
+
+        if nombre_func in ("rango", "range"):
+            if len(valores_args) == 1:
+                return list(range(1, int(valores_args[0]) + 1))
+            elif len(valores_args) == 2:
+                return list(range(int(valores_args[0]), int(valores_args[1]) + 1))
+            elif len(valores_args) == 3:
+                return list(range(int(valores_args[0]), int(valores_args[1]) + 1, int(valores_args[2])))
+            raise TypeError(
+                f"Error semantico (linea {linea}, columna {columna}): '{nombre_func}' espera de 1 a 3 argumentos."
+            )
+
+        # Resolucion de funcion de usuario o pasada como parametro (higher-order function)
+        if nombre_func not in self.funciones:
+            if self.memoria.existe(nombre_func):
+                val = self.memoria.obtener(nombre_func, linea=linea, columna=columna)
+                if isinstance(val, dict) and val.get("tipo") == "funcion":
+                    nombre_func = val["nombre"]
+                elif isinstance(val, str) and val in self.funciones:
+                    nombre_func = val
+                else:
+                    raise TypeError(
+                        f"Error semantico (linea {linea}, columna {columna}): '{nombre_func}' no es una funcion invocable."
+                    )
+            else:
+                raise NameError(
+                    f"Error semantico (linea {linea}, columna {columna}): la funcion '{nombre_func}' no ha sido definida."
+                )
+
+        receta = self.funciones[nombre_func]
+        nombres_params = receta["params"]
+        cuerpo = receta["cuerpo"]
 
         if len(valores_args) != len(nombres_params):
             raise TypeError(

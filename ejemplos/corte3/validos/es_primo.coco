@@ -1,0 +1,60 @@
+# Funcion que verifica si un numero individual es primo
+funcion es_primo(n) {
+    divisor = 2;
+    primo = n > 1;
+
+    mientras (divisor < n && primo) {
+        primo = primo && (n % divisor != 0);
+        divisor = divisor + 1;
+    }
+
+    retornar primo;
+}
+
+# Funcion que recibe (l, fun): l es la lista y fun es la funcion es_primo
+# Devuelve una lista con los numeros primos encontrados
+funcion filtrar_primos(l, fun) {
+    resultado = [];
+    i = 0;
+    total = longitud(l);
+
+    mientras (i < total) {
+        numero = l[i];
+        si (fun(numero)) {
+            resultado = resultado + [numero];
+        }
+        i = i + 1;
+    }
+
+    retornar resultado;
+}
+
+# Funcion alternativa que devuelve una lista de booleanos (verdadero/falso) para cada posicion
+funcion mapear_primos(l, fun) {
+    resultado = [];
+    i = 0;
+    total = longitud(l);
+
+    mientras (i < total) {
+        resultado = resultado + [fun(l[i])];
+        i = i + 1;
+    }
+
+    retornar resultado;
+}
+
+# Lista de numeros desde 1 hasta n (ejemplo n = 20)
+l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+imprimir "Lista de entrada (1 hasta n):";
+imprimir l;
+
+# 1. Devuelve la lista de los numeros primos filtrados:
+lista_primos = filtrar_primos(l, es_primo);
+imprimir "Lista de numeros primos devuelta:";
+imprimir lista_primos;
+
+# 2. O la lista con el resultado de evaluar la funcion en cada numero:
+lista_booleanos = mapear_primos(l, es_primo);
+imprimir "Lista de evaluacion (booleanos):";
+imprimir lista_booleanos;
