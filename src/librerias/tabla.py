@@ -228,7 +228,10 @@ class Tabla:
                     elif tipo in ("texto", "str"):
                         fila_copia[columna] = str(val)
                     elif tipo in ("booleano", "bool"):
-                        fila_copia[columna] = bool(val)
+                        if isinstance(val, str):
+                            fila_copia[columna] = val.strip().lower() in ("verdadero", "true", "1", "t", "v", "si", "yes")
+                        else:
+                            fila_copia[columna] = bool(val)
                 except (ValueError, TypeError) as e:
                     raise ValueError(
                         f"No se pudo convertir el valor '{val}' en columna '{columna}' al tipo '{tipo}': {e}"

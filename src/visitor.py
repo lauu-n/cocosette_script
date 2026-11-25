@@ -623,6 +623,35 @@ class InterpreteVisitor(CocosetteVisitor):
                 self.visitSentencia(nodo_sentencia)
         return None
 
+    def visitCocoCondicional(self, ctx):
+        """Ejecuta una estructura condicional: si (condicion) { ... } sino { ... }."""
+        condicion = self.visit(ctx.expresion())
+        if bool(condicion):
+            if hasattr(ctx, "bloqueSi") and ctx.bloqueSi() is not None:
+                return self.visitBloqueSi(ctx.bloqueSi())
+            return None
+        elif hasattr(ctx, "bloqueSino") and ctx.bloqueSino() is not None:
+            return self.visitBloqueSino(ctx.bloqueSino())
+        return None
+
+    def visitBloqueSi(self, ctx):
+        """Ejecuta las sentencias dentro del bloque 'si'."""
+        for nodo_sentencia in ctx.sentencia():
+            retorno = self.visitSentencia(nodo_sentencia)
+            if retorno is not None:
+                return retorno
+        return None
+
+    def visitBloqueSino(self, ctx):
+        """Ejecuta las sentencias dentro del bloque 'sino' o evalua un 'sino si' anidado."""
+        if hasattr(ctx, "cocoCondicional") and ctx.cocoCondicional() is not None:
+            return self.visitCocoCondicional(ctx.cocoCondicional())
+        for nodo_sentencia in ctx.sentencia():
+            retorno = self.visitSentencia(nodo_sentencia)
+            if retorno is not None:
+                return retorno
+        return None
+
     def visitCocoDefFuncion(self, ctx):
         """Guarda la declaracion de una funcion (receta) en el diccionario de funciones."""
         nombre_func = ctx.ID().getText()
@@ -886,6 +915,8 @@ class InterpreteVisitor(CocosetteVisitor):
             return self.visitCocoRetornar(ctx.cocoRetornar())
         elif ctx.cocoMientras() is not None:
             return self.visitCocoMientras(ctx.cocoMientras())
+        elif hasattr(ctx, "cocoCondicional") and ctx.cocoCondicional() is not None:
+            return self.visitCocoCondicional(ctx.cocoCondicional())
         elif ctx.expresion() is not None:
             return self.visit(ctx.expresion())
         return None

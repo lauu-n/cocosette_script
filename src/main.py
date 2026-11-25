@@ -18,7 +18,16 @@ from antlr4 import CommonTokenStream, InputStream
 from CocosetteLexer import CocosetteLexer
 from CocosetteParser import CocosetteParser
 from visitor import InterpreteVisitor
-from validar import ColectorDeErrores
+try:
+    from validar import ColectorDeErrores
+except ImportError:
+    from antlr4.error.ErrorListener import ErrorListener
+    class ColectorDeErrores(ErrorListener):
+        def __init__(self):
+            super().__init__()
+            self.errores = []
+        def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+            self.errores.append(f"  linea {line}, columna {column}: {msg}")
 
 
 def ejecutar_archivo(ruta_archivo):

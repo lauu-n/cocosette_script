@@ -1,0 +1,38 @@
+# ====================================================================
+# EJEMPLO: ESTRUCTURA CONDICIONAL SI / SINO (IF / ELSE) EN COCOSETTE
+# ====================================================================
+
+# 1. Condicional basico con igualdad: 2 + 2 == 5
+si (2 + 2 == 5) {
+    imprimir "2 + 2 es igual a 5: es verdad";
+} sino {
+    imprimir "2 + 2 == 5 es falso: 2 + 2 es 4";
+}
+
+# 2. Condicional con variables numericas y logica de negocio
+precio = 120000;
+limite_descuento = 100000;
+
+si (precio > limite_descuento) {
+    descuento = precio * 0.15;
+    precio_final = precio - descuento;
+    imprimir "Aplica descuento especial del 15%:";
+    imprimir precio_final;
+} sino {
+    imprimir "No aplica descuento especial:";
+    imprimir precio;
+}
+
+# 3. Condicional simple (solo 'si', sin 'sino')
+activo = verdadero;
+si (activo) {
+    imprimir "El sistema Cocosette esta activo y procesando datos.";
+}
+
+# 4. Uso de la sintaxis alternativa en ingles 'if / else'
+valor = 50;
+if (valor == 50) {
+    imprimir "Sintaxis if / else funcionando correctamente.";
+} else {
+    imprimir "No coincide.";
+}

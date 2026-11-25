@@ -15,6 +15,17 @@ from CocosetteParser import CocosetteParser
 from visitor import InterpreteVisitor
 from memoria_ejecucion import MemoriaEjecucion
 
+try:
+    from validar import ColectorDeErrores
+except ImportError:
+    from antlr4.error.ErrorListener import ErrorListener
+    class ColectorDeErrores(ErrorListener):
+        def __init__(self):
+            super().__init__()
+            self.errores = []
+        def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+            self.errores.append(f"  linea {line}, columna {column}: {msg}")
+
 
 # =====================================================================
 # Funciones auxiliares
@@ -68,10 +79,24 @@ def ejecutar_codigo(codigo: str, visitor: InterpreteVisitor) -> bool:
     try:
         flujo = InputStream(codigo)
         lexer = CocosetteLexer(flujo)
+        errores_lex = ColectorDeErrores()
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(errores_lex)
+
         tokens = CommonTokenStream(lexer)
         parser = CocosetteParser(tokens)
+        errores_sin = ColectorDeErrores()
+        parser.removeErrorListeners()
+        parser.addErrorListener(errores_sin)
 
         arbol = parser.programa()
+        errores = errores_lex.errores + errores_sin.errores
+        if errores:
+            print("\n[Errores de sintaxis detectados]:")
+            for err in errores:
+                print(err)
+            return False
+
         visitor.visitPrograma(arbol)
         return True
 

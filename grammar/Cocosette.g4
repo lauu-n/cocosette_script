@@ -63,6 +63,7 @@ sentencia
     | cocoDefFuncion ';'?
     | cocoRetornar
     | cocoMientras ';'?
+    | cocoCondicional ';'?
     | expresion ';'
     ;
 
@@ -158,6 +159,26 @@ cocoImprimir
 // mientras (x < 10) { ... }  o  while x < 10 { ... }
 cocoMientras
     : COCOMIENTRAS '('? expresion ')'? '{' sentencia* '}'
+    ;
+
+
+// -------------------------
+// REGLA: cocoCondicional
+// -------------------------
+// Estructura condicional (si / sino o if / else).
+// Ejecuta el bloque 'si' cuando la condicion es verdadera,
+// y opcionalmente el bloque 'sino' cuando es falsa.
+cocoCondicional
+    : COCOSI '('? expresion ')'? bloqueSi ( COCOSINO bloqueSino )?
+    ;
+
+bloqueSi
+    : '{' sentencia* '}'
+    ;
+
+bloqueSino
+    : '{' sentencia* '}'
+    | cocoCondicional
     ;
 
 
@@ -328,6 +349,7 @@ tipoDato
     : COCOENTERO
     | COCODECIMAL
     | COCOTEXTO
+    | COCOTIPOBOOL
     | COCOBOOLEANO
     ;
 
@@ -580,6 +602,8 @@ COCOTITULO        : 'titulo';
 COCOGUARDAR       : 'guardar';
 COCOIMPRIMIR      : 'imprimir' | 'mostrar';
 COCOMIENTRAS      : 'mientras' | 'while';
+COCOSI            : 'si' | 'if';
+COCOSINO          : 'sino' | 'else';
 COCOFUNCION       : 'funcion' | 'def' | 'fn';
 COCORETORNAR      : 'retornar' | 'return';
 // CORTE III: MACHINE LEARNING Y EVALUACION
@@ -609,6 +633,7 @@ COCOA             : 'a';
 COCOENTERO        : 'entero';
 COCODECIMAL       : 'decimal';
 COCOTEXTO         : 'texto';
+COCOTIPOBOOL      : 'booleano';
 COCOAGRUPAR       : 'agrupar';
 COCORESUMIR       : 'resumir';
 COCOSUMA          : 'suma';
