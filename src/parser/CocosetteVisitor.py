@@ -59,6 +59,21 @@ class CocosetteVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CocosetteParser#cocoCondicional.
+    def visitCocoCondicional(self, ctx:CocosetteParser.CocoCondicionalContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CocosetteParser#bloqueSi.
+    def visitBloqueSi(self, ctx:CocosetteParser.BloqueSiContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CocosetteParser#bloqueSino.
+    def visitBloqueSino(self, ctx:CocosetteParser.BloqueSinoContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CocosetteParser#cocoDefFuncion.
     def visitCocoDefFuncion(self, ctx:CocosetteParser.CocoDefFuncionContext):
         return self.visitChildren(ctx)
@@ -206,6 +221,11 @@ class CocosetteVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CocosetteParser#ejeY.
     def visitEjeY(self, ctx:CocosetteParser.EjeYContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CocosetteParser#listaModelos.
+    def visitListaModelos(self, ctx:CocosetteParser.ListaModelosContext):
         return self.visitChildren(ctx)
 
 

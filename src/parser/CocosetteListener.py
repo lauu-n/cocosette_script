@@ -98,6 +98,33 @@ class CocosetteListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by CocosetteParser#cocoCondicional.
+    def enterCocoCondicional(self, ctx:CocosetteParser.CocoCondicionalContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#cocoCondicional.
+    def exitCocoCondicional(self, ctx:CocosetteParser.CocoCondicionalContext):
+        pass
+
+
+    # Enter a parse tree produced by CocosetteParser#bloqueSi.
+    def enterBloqueSi(self, ctx:CocosetteParser.BloqueSiContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#bloqueSi.
+    def exitBloqueSi(self, ctx:CocosetteParser.BloqueSiContext):
+        pass
+
+
+    # Enter a parse tree produced by CocosetteParser#bloqueSino.
+    def enterBloqueSino(self, ctx:CocosetteParser.BloqueSinoContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#bloqueSino.
+    def exitBloqueSino(self, ctx:CocosetteParser.BloqueSinoContext):
+        pass
+
+
     # Enter a parse tree produced by CocosetteParser#cocoDefFuncion.
     def enterCocoDefFuncion(self, ctx:CocosetteParser.CocoDefFuncionContext):
         pass
@@ -365,6 +392,15 @@ class CocosetteListener(ParseTreeListener):
 
     # Exit a parse tree produced by CocosetteParser#ejeY.
     def exitEjeY(self, ctx:CocosetteParser.EjeYContext):
+        pass
+
+
+    # Enter a parse tree produced by CocosetteParser#listaModelos.
+    def enterListaModelos(self, ctx:CocosetteParser.ListaModelosContext):
+        pass
+
+    # Exit a parse tree produced by CocosetteParser#listaModelos.
+    def exitListaModelos(self, ctx:CocosetteParser.ListaModelosContext):
         pass
 
 
